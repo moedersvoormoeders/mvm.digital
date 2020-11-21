@@ -1,9 +1,12 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Search from '../views/Search.vue'
+import MateriaalSearch from '../views/materiaal/Search.vue'
+import MateriaalDetails from '../views/materiaal/Details.vue'
+import SinterklaasSearch from '../views/sinterklaas/Search.vue'
 import Login from '../views/Login.vue'
+import Home from '../views/Home.vue'
 import Nav from '../views/Nav.vue'
-import Details from '../views/Details.vue'
+
 
 Vue.use(VueRouter)
 
@@ -19,15 +22,25 @@ const routes = [
     component: Nav,
     children: [
       {
-        path: '/search',
-        name: 'search',
-        component: Search
+        path: '/home',
+        name: 'home',
+        component: Home,
       },
       {
-        path: '/details/:id',
-        name: 'details',
-        component: Details,
+        path: '/materiaal/search',
+        name: 'materiaal-search',
+        component: MateriaalSearch,
+      },
+      {
+        path: '/materiaal/details/:id',
+        name: 'materiaal-details',
+        component: MateriaalDetails,
         props: true,
+      },
+      {
+        path: '/sinterklaas/search',
+        name: 'sinterklaas-search',
+        component: SinterklaasSearch,
       },
     ]
   },
@@ -50,6 +63,6 @@ router.beforeEach((to, from, next) => {
   next();
 })
 
-router.push("search")
+router.push("home")
 
 export default router

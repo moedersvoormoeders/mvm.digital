@@ -7,7 +7,6 @@
           <div class="row justify-content-center">
             <img src="/images/logo.png" alt="Moeders voor Moeders" id="logo" class="col-12"/>
           </div>
-          <h2>Materiaal</h2>
           <form m v-on:submit.prevent="login">
             <div class="form-group">
               <label class="sr-only" for="username">Gebruikersnaam</label>
@@ -57,7 +56,7 @@ export default {
       if (this.username && this.password) {
         try {
           await authService.login(this.username, this.password)
-          this.$router.push("/search")
+          this.$router.push("/home")
           this.submitted = false;
         } catch(e) {
           this.submitted = false;

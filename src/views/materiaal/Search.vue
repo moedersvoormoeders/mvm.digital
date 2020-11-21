@@ -52,8 +52,8 @@
 </template>
 
 <script>
-import { klantenService } from "../_services/klanten.service"
-import { authService } from "../_services/auth.service"
+import { klantenService } from "../../_services/klanten.service"
+import { authService } from "../../_services/auth.service"
 
 export default {
   template: "#search",
@@ -92,7 +92,7 @@ export default {
 
         // TODO: implement multi results in the API backend
 
-        vm.$router.push({ name: "details", params: { id: result.mvmNummer } });
+        vm.$router.push({ name: "materiaal-details", params: { id: result.mvmNummer } });
 
         vm.doelgroepnummer = "";
       }).catch((error) => 

@@ -8,8 +8,14 @@
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <router-link class="nav-link" to="/search"><i class="far fa-tshirt"></i> Materiaal <span class="sr-only">(current)</span></router-link>
+          <li :class="$route.name == 'home' ? 'nav-item active' : 'nav-item'">
+            <router-link class="nav-link" to="/home"><i class="far fa-home"></i> Home</router-link>
+          </li>
+          <li :class="$route.name.indexOf('materiaal') == 0 ? 'nav-item active' : 'nav-item'">
+            <router-link class="nav-link" to="/materiaal/search"><i class="far fa-tshirt"></i> Materiaal</router-link>
+          </li>
+          <li :class="$route.name.indexOf('sinterklaas') == 0 ? 'nav-item active' : 'nav-item'">
+            <router-link class="nav-link" to="/sinterklaas/search"><i class="far fa-staff"></i> Sinterklaas</router-link>
           </li>
         </ul>
        <!-- <form class="form-inline my-2 my-lg-0">

@@ -171,8 +171,8 @@
 </template>
 
 <script>
-import { materiaalService } from "../_services/materiaal.service"
-import { klantenService } from "../_services/klanten.service"
+import { materiaalService } from "../../_services/materiaal.service"
+import { klantenService } from "../../_services/klanten.service"
 import * as moment from "moment"
 
 import Datepicker from "vuejs-datepicker";
@@ -448,7 +448,7 @@ async function sendPrint(data = {}) {
 }
 </script>
 
-<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+<style src="../../../node_modules/vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style>
 ul {
   padding-left: 20px;
