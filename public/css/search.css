@@ -1,0 +1,23 @@
+.big-search input {
+    font-size: 1.5em;
+}
+
+.big-search .input-group-text {
+    font-size: 1.5em;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.form-print input {
+    width: 30%;
+}
+
+.container {
+    max-width: 1400px !important; 
+}
+
+.print-num {
+    max-width: 100px;
+}
