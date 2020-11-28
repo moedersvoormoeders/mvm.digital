@@ -125,6 +125,7 @@
 
 <script>
 import {sinterklaasService} from "../../_services/sinterklaas.service"
+import {klantenService} from "../../_services/klanten.service"
 import {authService} from "../../_services/auth.service"
 
 export default {
@@ -149,9 +150,41 @@ export default {
 
       return false
     },
-    print: function (result) {
-      this.printed.push(result.mvmNummer)
-      // TODO: add more
+    print: async function (result) {
+      try {
+        const klantInfo = klantenService.lookUpNumber(result.mvmNummer)
+
+        const response = await fetch("https://onthaal.print.mvm.digital/sinterklaas", {
+          method: 'POST',
+          mode: 'cors',
+          cache: 'no-cache',
+          credentials: 'same-origin',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          redirect: 'follow',
+          referrerPolicy: 'no-referrer',
+          body: JSON.stringify({
+            snoep: {
+              mvmNummer: result.mvmNummer,
+              naam: result.naam,
+              kinderen: klantInfo.aantalOnder12Jaar,
+              volwassenen: klantInfo.aantalBovenOf12Jaar,
+            },
+            speelgoed: result,
+          })
+        });
+        await response.json();
+
+        this.printed.push(result.mvmNummer)
+      } catch (e) {
+        this.$Simplert.open({
+          title: "Print error!",
+          message: e,
+          type: "error",
+          customCloseBtnText: "Sluiten"
+        })
+      }
     },
     search: function () {
       let vm = this;
