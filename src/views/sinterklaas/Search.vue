@@ -152,7 +152,7 @@ export default {
     },
     print: async function (result) {
       try {
-        const klantInfo = klantenService.lookUpNumber(result.mvmNummer)
+        const klantInfo = await klantenService.lookUpNumber(result.mvmNummer)
 
         const response = await fetch("https://onthaal.print.mvm.digital/sinterklaas", {
           method: 'POST',
@@ -174,7 +174,20 @@ export default {
             speelgoed: result,
           })
         });
-        await response.json();
+        const resp = await response.json();
+        if (resp.status == "error") {
+          throw resp
+        }
+
+        this.$Simplert.open({
+          title: "Print verstuurd",
+          message: "Print opdracht verstuurd",
+          type: "success",
+          customCloseBtnText: "Sluiten",
+          onClose: function() {
+            this.$refs.search.focus()
+          }
+        });
 
         this.printed.push(result.mvmNummer)
       } catch (e) {
