@@ -152,6 +152,15 @@ export default {
     },
     print: async function (result) {
       try {
+        const kinderen = []
+        for (let pakket of result.paketten) {
+          console.log(pakket)
+          if (pakket.komt) {
+            kinderen.push(pakket.naam)
+          }
+        }
+
+        await sinterklaasService.saveKinderenForNumber(result.mvmNummer, kinderen)
         const klantInfo = await klantenService.lookUpNumber(result.mvmNummer)
 
         const response = await fetch("https://onthaal.print.mvm.digital/sinterklaas", {

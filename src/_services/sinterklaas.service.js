@@ -12,6 +12,21 @@ const lookUpNumber = (mvmNummer) => {
 
 }
 
+const saveKinderenForNumber = (mvmNummer, kinderen) => {
+    const requestOptions = {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            ...authHeader(),
+        },
+        body: JSON.stringify({ kinderen }, getCircularReplacer())
+    };
+
+    return fetch(`${config.apiUrl}/v1/sinterklaas/klant/${mvmNummer}`, requestOptions).then(handleResponse);
+}
+
+
 const handleResponse = (response) => {
     return response.text().then(text => {
         const data = text && JSON.parse(text);
@@ -32,4 +47,18 @@ const handleResponse = (response) => {
 
 export const sinterklaasService = {
     lookUpNumber,
+    saveKinderenForNumber,
+};
+
+const getCircularReplacer = () => {
+    const seen = new WeakSet();
+    return (key, value) => {
+        if (typeof value === "object" && value !== null) {
+            if (seen.has(value)) {
+                return;
+            }
+            seen.add(value);
+        }
+        return value;
+    };
 };
