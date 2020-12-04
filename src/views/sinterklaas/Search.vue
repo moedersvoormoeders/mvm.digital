@@ -153,9 +153,10 @@ export default {
     print: async function (result) {
       try {
         const kinderen = []
+        const newPaketten = []
         for (let pakket of result.paketten) {
-          console.log(pakket)
           if (pakket.komt) {
+            newPaketten.push(newPaketten)
             kinderen.push(pakket.naam)
           }
         }
@@ -180,7 +181,11 @@ export default {
               kinderen: klantInfo.aantalOnder12Jaar,
               volwassenen: klantInfo.aantalBovenOf12Jaar,
             },
-            speelgoed: result,
+            speelgoed: {
+              naam: result.naam,
+              mvmNummer: result.mvmNummer,
+              paketten: newPaketten,
+            },
           })
         });
         const resp = await response.json();
