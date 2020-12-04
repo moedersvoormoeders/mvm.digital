@@ -156,7 +156,7 @@ export default {
         const newPaketten = []
         for (let pakket of result.paketten) {
           if (pakket.komt) {
-            newPaketten.push(newPaketten)
+            newPaketten.push(pakket)
             kinderen.push(pakket.naam)
           }
         }
@@ -186,7 +186,7 @@ export default {
               mvmNummer: result.mvmNummer,
               paketten: newPaketten,
             },
-          })
+          }, getCircularReplacer())
         });
         const resp = await response.json();
         if (resp.status == "error") {
@@ -244,6 +244,20 @@ export default {
     authService.check().catch(() => this.$router.push("/login"))
   }
 };
+
+const getCircularReplacer = () => {
+  const seen = new WeakSet();
+  return (key, value) => {
+    if (typeof value === "object" && value !== null) {
+      if (seen.has(value)) {
+        return;
+      }
+      seen.add(value);
+    }
+    return value;
+  };
+};
+
 </script>
 
 <style scoped>
