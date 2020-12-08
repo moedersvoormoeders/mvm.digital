@@ -337,7 +337,7 @@ export default {
     goBack: function() {
       let vm = this;
       let confirmFn = function() {
-        vm.$router.push({ name: "search" });
+        vm.$router.push({ name: "materiaal-search" });
       };
       if (this.hasChanges()) {
         this.$Simplert.open({
