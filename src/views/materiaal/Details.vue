@@ -195,6 +195,7 @@ export default {
       info: {},
       materiaalTypes: {},
       contacten: [],
+      newItemCount: 0,
     };
   },
   methods: {
@@ -249,7 +250,10 @@ export default {
         object: {ID: 0, naam: "", categorie: {ID: catID, naam: catNaam}},
         datum: new Date(),
         print: true,
+        _intID: this.newItemCount,
       }].concat(this.gekregen)
+
+      this.newItemCount++
     },
     removeRow: function(obj) {
       this.gekregen = this.gekregen.filter(aObj => aObj != obj)
