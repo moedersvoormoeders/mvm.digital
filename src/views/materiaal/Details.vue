@@ -41,7 +41,7 @@
       </div>
       <h3>Info</h3>
       <div class="row mb-3 materiaal-info">
-        <div class="col-4 mb-3">
+        <div class="col-3 mb-3">
           <h5>Naam</h5>
           <p class="info">{{klant.voornaam}} {{klant.naam}}</p>
         </div>
@@ -49,9 +49,13 @@
           <h5>MVM Nummer</h5>
           <p class="info">{{klant.mvmNummer}}</p>
         </div>
-        <div class="col-4 mb-3">
+        <div class="col-2 mb-3">
           <h5>Code</h5>
           <p class="info"><span :style="(klant.code || '').indexOf('NB') >= 0 ? 'color: red;' : ''">{{klant.code}}</span></p>
+        </div>
+        <div class="col-3 mb-3">
+          <h5>Woonplaats</h5>
+          <p class="info">{{klant.postcode}} {{klant.woonplaats}}</p>
         </div>
         <div class="col-4 mb-3">
           <h5>Classificatie</h5>
