@@ -327,6 +327,7 @@ export default {
         if (materiaalResponse.gekregen && materiaalResponse.gekregen.length != this.gekregen.length) {
           return this.save()
         }
+        return true
       } catch (e) {
         this.$Simplert.open({
           title: "Error bij opslaan!",
@@ -334,8 +335,8 @@ export default {
           type: "error",
           customCloseBtnText: "Sluiten"
         });
+        return false
       }
-
     },
     hasChanges: function() {
       if (JSON.stringify({gekregen: this.gekregen, opmerking: this.opmerking}, getCircularReplacer()) != this.originalData) {
@@ -345,22 +346,28 @@ export default {
     },
     goBack: function() {
       let vm = this;
-      let confirmFn = function() {
-        vm.$router.push({ name: "materiaal-search" });
-      };
       if (this.hasChanges()) {
         this.$Simplert.open({
           title: "Er zijn niet opgeslagen wijzigingen!",
-          message: "Ben je zeker dat je wil terug gaan?",
+          message: "wil je deze opslaan?",
           type: "info",
           useConfirmBtn: true,
-          onConfirm: confirmFn,
+          onConfirm: function() {
+            vm.save().then((ok) => {
+              if (ok) {
+                vm.$router.push({ name: "materiaal-search" });
+              }
+            })
+          },
+          onClose: function() {
+            vm.$router.push({ name: "materiaal-search" });
+          },
           customConfirmBtnClass: "btn btn-warning",
-          customConfirmBtnText: "Ga Terug",
-          customCloseBtnText: "Sluiten"
+          customConfirmBtnText: "Opslaan",
+          customCloseBtnText: "Teruggaan zonder opslagen"
         });
       } else {
-        confirmFn();
+        vm.$router.push({ name: "materiaal-search" });
       }
     }
   },
