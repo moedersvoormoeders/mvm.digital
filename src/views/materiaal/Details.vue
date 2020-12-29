@@ -287,7 +287,8 @@ export default {
               object: gekregen.object.naam,
               opmerking: gekregen.opmerking,
               maat: gekregen.maat ? gekregen.maat.naam : null,
-              ontvanger: gekregen.ontvanger ? { naam: gekregen.ontvanger, geslacht: this.getGeslacht(gekregen.ontvanger) } : null
+              ontvanger: gekregen.ontvanger ? { naam: gekregen.ontvanger, geslacht: this.getGeslacht(gekregen.ontvanger) } : null,
+              prijs: gekregen.object.prijs,
             })
           }
         }
