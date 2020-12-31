@@ -556,4 +556,9 @@ ul {
 .vdp-datepicker input {
   width: 150px;
 }
+
+.table .thead-dark th .vdp-datepicker {
+  color: #000;
+}
+
 </style>
