@@ -97,6 +97,9 @@
                   <div class="row">
                     <h3 class="col-12">
                       <span class="float-right">
+                        <button type="button" class="btn btn-info mr-2" v-on:click="showFilter ? resetFilter() : showFilter = true">
+                          <i class="fas fa-filter" />
+                        </button>
                         <button type="button" class="btn btn-success" v-on:click="addRow(materiaalType.ID, materiaalType.naam)">
                           <i class="fas fa-plus-square" /> Rij Toevoegen
                         </button>
@@ -115,12 +118,36 @@
                     </colgroup>
                     <thead class="thead-dark">
                       <tr>
-                        <th>Print</th>
-                        <th>Datum</th>
-                        <th>Aantal</th>
-                        <th v-if="materiaalType.perKind">Kind</th>
-                        <th>Item</th>
-                        <th v-if="materiaalType.opMaat">Maat</th>
+                        <th>
+                          Print
+                        </th>
+                        <th>
+                          Datum
+                          <div v-if="showFilter">
+                            <datepicker :format="'yyyy-MM-dd'" v-model="filter.datum"></datepicker>
+                          </div>
+                        </th>
+                        <th>
+                          Aantal
+                        </th>
+                        <th v-if="materiaalType.perKind">
+                          Kind
+                          <div v-if="showFilter">
+                            <multiselect v-model="filter.ontvanger" :options="getKinderen()" placeholder="Filter"></multiselect>
+                          </div>
+                        </th>
+                        <th>
+                          Item
+                          <div v-if="showFilter">
+                            <multiselect v-model="filter.object" track-by="naam" label="naam" :options="materiaalType.opties" placeholder="Filter" :allow-empty="true"></multiselect>
+                          </div>
+                        </th>
+                        <th v-if="materiaalType.opMaat">
+                          Maat
+                          <div v-if="showFilter">
+                            <multiselect v-model="filter.maat" track-by="naam" label="naam" :options="(filter.object || []).maten || []" placeholder="Filter" @remove="filter.maat=null"></multiselect>
+                          </div>
+                        </th>
                         <th>Opmerking</th>
                         <th></th>
                       </tr>
@@ -190,6 +217,8 @@ export default {
   },
   data: function() {
     return {
+      filter: {},
+      showFilter: false,
       klant: {},
       loading: true,
       originalData: "", //JSON stored here
@@ -228,7 +257,32 @@ export default {
       return cat.naam.replace(" ", "")
     },
     materiaalVoorCategorie: function(catNaam) {
-      return this.gekregen.filter(item => item.object.categorie.naam == catNaam)
+      const materiaal = this.gekregen.filter(item => item.object.categorie.naam == catNaam)
+      if (!this.filter || !this.showFilter) {
+        return materiaal
+      }
+
+      const filteredMat = []
+
+      for (let object of materiaal) {
+        let shouldDisplay = true
+
+        if (this.filter.datum && this.filter.datum.toString() != object.datum.toString()) {
+          shouldDisplay = false
+        } else if (this.filter.ontvanger && this.filter.ontvanger != object.ontvanger) {
+          shouldDisplay = false
+        } else if (this.filter.object && this.filter.object.ID && this.filter.object.ID != object.object.ID) {
+          shouldDisplay = false
+        } else if (this.filter.maat && this.filter.maat.ID && this.filter.maat.ID != object.maat.ID) {
+          shouldDisplay = false
+        }
+
+        if (shouldDisplay) {
+          filteredMat.push(object)
+        }
+      }
+
+      return filteredMat
     },
     getKinderen: function() {
       const out = []
@@ -245,6 +299,7 @@ export default {
       }
     },
     addRow: function(catID, catNaam) {
+      this.resetFilter()
       this.gekregen = [{
         aantal: 1,
         ontvanger: "",
@@ -369,11 +424,21 @@ export default {
       } else {
         vm.$router.push({ name: "materiaal-search" });
       }
-    }
+    },
+     resetFilter: function () {
+      this.filter = {
+          ontvanger: "",
+          naam: "",
+          maat: "",
+      }
+
+      this.showFilter = false
+     }
   },
 
   created: async function() {
     this.loading = true;
+    this.resetFilter()
 
     let materiaalResponse;
     let klantResponse;
