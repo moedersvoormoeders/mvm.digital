@@ -54,6 +54,7 @@
 <script>
 import { klantenService } from "../../_services/klanten.service"
 import { authService } from "../../_services/auth.service"
+import { keyboardHelper } from "@/helpers/keyboard.helper";
 
 export default {
   template: "#search",
@@ -76,6 +77,8 @@ export default {
         alert("Nog niet ondersteund, Maartje haar schuld...")
         return
       }
+
+      this.searchQuery = keyboardHelper.superCrazyAzertyBarcodeFix(this.searchQuery)
 
       klantenService.lookUpNumber(`${this.prefix}${this.searchQuery}`).then(function(result) {
         vm.searching = false;
