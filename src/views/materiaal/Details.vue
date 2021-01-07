@@ -229,6 +229,7 @@ export default {
       materiaalTypes: {},
       contacten: [],
       newItemCount: 0,
+      categoryForID: {},
     };
   },
   methods: {
@@ -328,6 +329,15 @@ export default {
       }
       return "onbekend"
     },
+    getLeeftijd: function (naam) {
+      // calculates age for contact in a very inaccurate way as it is only used for birthday gifts
+      for (let contact of this.contacten) {
+        if (`${contact.voornaam} ${contact.naam}` == naam && contact.geboorteDatum) {
+          return (new Date()).getFullYear() - (new Date(contact.geboorteDatum)).getFullYear();
+        }
+      }
+      return "onbekend"
+    },
     print: async function () {
       try {
         this.validate()
@@ -336,15 +346,25 @@ export default {
         let items = []
 
         for (let gekregen of this.gekregen) {
-          console.log(gekregen)
           if (gekregen.print) {
-            items.push({
+            const item = {
               object: gekregen.object.naam,
               opmerking: gekregen.opmerking,
               maat: gekregen.maat ? gekregen.maat.naam : null,
-              ontvanger: gekregen.ontvanger ? { naam: gekregen.ontvanger, geslacht: this.getGeslacht(gekregen.ontvanger) } : null,
+              ontvanger: {},
               prijs: gekregen.object.prijs,
-            })
+            }
+            if (gekregen.ontvanger) {
+              item.ontvanger.naam = gekregen.ontvanger
+              item.ontvanger.geslacht= this.getGeslacht(gekregen.ontvanger)
+            }
+            console.log(this.categoryForID[gekregen.object.categorie.ID])
+
+            if (this.categoryForID[gekregen.object.categorie.ID] && this.categoryForID[gekregen.object.categorie.ID].printKindInfo) {
+              item.ontvanger.leeftijd= this.getLeeftijd(gekregen.ontvanger)
+            }
+
+            items.push(item)
           }
         }
 
@@ -472,12 +492,17 @@ export default {
     this.originalData = JSON.stringify({gekregen: materiaalResponse.gekregen, opmerking: materiaalResponse.opmerking});
 
     for (let optie of materiaalOpties) {
+      // add info to categoryForID for cat info lookup
+      if (!this.categoryForID[optie.categorie.ID]) {
+        this.categoryForID[optie.categorie.ID] = optie.categorie
+      }
+
+      // add option for composing view
       if (!this.materiaalTypes[optie.categorie.naam]) {
         this.materiaalTypes[optie.categorie.naam] = optie.categorie
         this.materiaalTypes[optie.categorie.naam].opties = []
       }
       this.materiaalTypes[optie.categorie.naam].opties.push(optie)
-      console.log(this.materiaalTypes[optie.categorie.naam].opties)
     }
 
     this.klant = klantResponse;
