@@ -491,18 +491,29 @@ export default {
 
     this.originalData = JSON.stringify({gekregen: materiaalResponse.gekregen, opmerking: materiaalResponse.opmerking});
 
+    // add option for composing view
+    let keysToSort = []
+    let materiaalTypes = {}
     for (let optie of materiaalOpties) {
       // add info to categoryForID for cat info lookup
       if (!this.categoryForID[optie.categorie.ID]) {
         this.categoryForID[optie.categorie.ID] = optie.categorie
       }
-
-      // add option for composing view
-      if (!this.materiaalTypes[optie.categorie.naam]) {
-        this.materiaalTypes[optie.categorie.naam] = optie.categorie
-        this.materiaalTypes[optie.categorie.naam].opties = []
+      if (!materiaalTypes[optie.categorie.naam]) {
+        keysToSort.push(optie.categorie.naam)
+        materiaalTypes[optie.categorie.naam] = optie.categorie
+        materiaalTypes[optie.categorie.naam].opties = []
       }
-      this.materiaalTypes[optie.categorie.naam].opties.push(optie)
+      materiaalTypes[optie.categorie.naam].opties.push(optie)
+    }
+
+    // sort categories in view order
+    keysToSort.sort(function (a,b) {
+      return materiaalTypes[a].order - materiaalTypes[b].order
+    })
+
+    for (let k of keysToSort) {
+      this.materiaalTypes[k] = materiaalTypes[k]
     }
 
     this.klant = klantResponse;
