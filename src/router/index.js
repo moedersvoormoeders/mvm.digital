@@ -2,6 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import MateriaalSearch from '../views/materiaal/Search.vue'
 import MateriaalDetails from '../views/materiaal/Details.vue'
+import VoedingSearch from '../views/voeding/Search.vue'
+import VoedingDetails from '../views/voeding/Details.vue'
 import SinterklaasSearch from '../views/sinterklaas/Search.vue'
 import Login from '../views/Login.vue'
 import Home from '../views/Home.vue'
@@ -35,6 +37,17 @@ const routes = [
         path: '/materiaal/details/:id',
         name: 'materiaal-details',
         component: MateriaalDetails,
+        props: true,
+      },
+      {
+        path: '/voeding/search',
+        name: 'voeding-search',
+        component: VoedingSearch,
+      },
+      {
+        path: '/voeding/details/:id',
+        name: 'voeding-details',
+        component: VoedingDetails,
         props: true,
       },
       {
