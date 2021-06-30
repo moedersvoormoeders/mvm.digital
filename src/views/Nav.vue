@@ -14,6 +14,9 @@
           <li :class="$route.name.indexOf('materiaal') == 0 ? 'nav-item active' : 'nav-item'">
             <router-link class="nav-link" to="/materiaal/search"><i class="far fa-tshirt"></i> Materiaal</router-link>
           </li>
+          <li :class="$route.name.indexOf('voeding') == 0 ? 'nav-item active' : 'nav-item'">
+            <router-link class="nav-link" to="/voeding/search"><i class="far fa-utensils"></i> Voeding</router-link>
+          </li>
           <li :class="$route.name.indexOf('sinterklaas') == 0 ? 'nav-item active' : 'nav-item'">
             <router-link class="nav-link" to="/sinterklaas/search"><i class="far fa-staff"></i> Sinterklaas</router-link>
           </li>
