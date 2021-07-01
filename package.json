@@ -11,6 +11,7 @@
     "core-js": "^3.4.4",
     "lodash": "^4.17.20",
     "luxon": "^1.27.0",
+    "minimatch": "^3.0.4",
     "moment": "^2.29.1",
     "vue": "^2.6.10",
     "vue-multiselect": "^2.1.6",
