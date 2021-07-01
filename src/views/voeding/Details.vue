@@ -95,9 +95,13 @@
           <h5>Woonplaats</h5>
           <p class="info">{{ klant.postcode }} {{ klant.woonplaats }}</p>
         </div>
-        <div class="col-6">
+        <div class="col-4">
           <h5>Gezinsleden</h5>
           <div class="gezinsleden" v-html="klant.huishouden"></div>
+        </div>
+        <div class="col-2">
+          <h5>Type Voeding</h5>
+          <p class="info">{{ klant.typeVoeding }}</p>
         </div>
         <div class="col-3">
           <h5>Speciale voeding</h5>
