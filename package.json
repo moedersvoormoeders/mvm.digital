@@ -10,7 +10,8 @@
   "dependencies": {
     "core-js": "^3.4.4",
     "lodash": "^4.17.20",
-    "moment": "^2.27.0",
+    "luxon": "^1.27.0",
+    "moment": "^2.29.1",
     "vue": "^2.6.10",
     "vue-multiselect": "^2.1.6",
     "vue-router": "^3.1.3",

@@ -97,7 +97,7 @@
         </div>
         <div class="col-6">
           <h5>Gezinsleden</h5>
-          <pre>{{ klant.huishouden }}</pre>
+          <div class="gezinsleden" v-html="klant.huishouden"></div>
         </div>
         <div class="col-3">
           <h5>Speciale voeding</h5>
@@ -225,6 +225,7 @@
 import { klantenService } from "../../_services/klanten.service";
 import { voedingService } from "../../_services/voeding.service";
 import { find } from "lodash";
+import { DateTime } from "luxon";
 
 import Datepicker from "vuejs-datepicker";
 import Multiselect from "vue-multiselect";
@@ -560,6 +561,17 @@ export default {
     this.klant = klantResponse;
 
     const huishoudenData = [];
+
+    huishoudenData.push(
+      `${this.klant.geboortedatum} ${this.klant.geslacht} - ${this.klant.voornaam} ${this.klant.naam}`
+    );
+
+    if (isJarig(this.klant.geboortedatum)) {
+      huishoudenData[huishoudenData.length - 1] = `${
+        huishoudenData[huishoudenData.length - 1]
+      }<span class="jarig"> - jarig</span>`;
+    }
+
     for (let contact of contacten) {
       // note to future self, you will regret this slice. I told you so!
       huishoudenData.push(
@@ -567,8 +579,14 @@ export default {
           contact.voornaam
         } ${contact.naam}`
       );
+
+      if (isJarig(contact.geboorteDatum)) {
+        huishoudenData[huishoudenData.length - 1] = `${
+          huishoudenData[huishoudenData.length - 1]
+        }<span class="jarig"> - jarig</span>`;
+      }
     }
-    this.klant.huishouden = huishoudenData.sort().reverse().join("\n");
+    this.klant.huishouden = huishoudenData.sort().reverse().join("</br>");
 
     this.storeInfo(voedingResponse);
 
@@ -576,20 +594,18 @@ export default {
   },
 };
 
-/*
-const getCircularReplacer = () => {
-  const seen = new WeakSet();
-  return (key, value) => {
-    if (typeof value === "object" && value !== null) {
-      if (seen.has(value)) {
-        return;
-      }
-      seen.add(value);
-    }
-    return value;
-  };
-};
- */
+function isJarig(geboorteDatum) {
+  const gebDatum = DateTime.fromObject({
+    year: DateTime.now().year,
+    month: new Date(geboorteDatum).getMonth() + 1,
+    day: new Date(geboorteDatum).getDay(),
+  }).startOf("day");
+
+  const nextWeek = DateTime.now().startOf("day").plus({ days: 7 });
+  const today = DateTime.now().startOf("day");
+
+  return today <= gebDatum && nextWeek > gebDatum;
+}
 </script>
 
 <style
@@ -598,5 +614,11 @@ const getCircularReplacer = () => {
 <style>
 .stripe {
   background-color: #c6cbd0;
+}
+.jarig {
+  color: #ff391e;
+}
+.gezinsleden {
+  font-family: "Roboto Mono", monospace;
 }
 </style>
