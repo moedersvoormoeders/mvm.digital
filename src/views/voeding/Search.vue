@@ -13,9 +13,15 @@
           <div class="col-8 big-search">
             <div class="input-group mb-1">
               <div class="input-group-prepend">
-                <div class="input-group-text">{{prefix}}</div>
+                <div class="input-group-text">{{ prefix }}</div>
               </div>
-              <input type="text" class="form-control" ref="search" v-model="searchQuery" v-focus />
+              <input
+                type="text"
+                class="form-control"
+                ref="search"
+                v-model="searchQuery"
+                v-focus
+              />
             </div>
           </div>
           <div class="col-4">
@@ -25,7 +31,8 @@
               v-on:click="search()"
               :disabled="searching"
             >
-              <i class="fas fa-search"></i><span class="d-none d-md-inline"> Zoeken</span>
+              <i class="fas fa-search"></i
+              ><span class="d-none d-md-inline"> Zoeken</span>
             </button>
           </div>
         </div>
@@ -33,7 +40,9 @@
           <div class="col-md-4 col-12">
             <div class="input-group mb-3">
               <div class="input-group-prepend">
-                <label class="input-group-text" for="inputGroupSelect01">Type</label>
+                <label class="input-group-text" for="inputGroupSelect01"
+                  >Type</label
+                >
               </div>
               <select class="custom-select" v-model="prefix">
                 <option value="MVM">Doelgroep</option>
@@ -52,71 +61,79 @@
 </template>
 
 <script>
-import { klantenService } from "../../_services/klanten.service"
-import { authService } from "../../_services/auth.service"
-import { keyboardHelper } from "@/helpers/keyboard.helper";
+import { klantenService } from "../../_services/klanten.service";
+import { authService } from "../../_services/auth.service";
+import { keyboardHelper } from "@/_helpers/keyboard.helper";
 
 export default {
   template: "#search",
   components: {},
-  data: function() {
+  data: function () {
     return {
       loading: false,
       searchQuery: "",
       prefix: "MVM",
       searching: false,
-      results: []
+      results: [],
     };
   },
 
   methods: {
-    search: function() {
+    search: function () {
       let vm = this;
 
       if (this.prefix != "MVM") {
-        alert("Nog niet ondersteund, Maartje haar schuld...")
-        return
+        alert("Nog niet ondersteund, Maartje haar schuld...");
+        return;
       }
 
-      this.searchQuery = keyboardHelper.superCrazyAzertyBarcodeFix(this.searchQuery)
+      this.searchQuery = keyboardHelper.superCrazyAzertyBarcodeFix(
+        this.searchQuery
+      );
 
-      klantenService.lookUpNumber(`${this.prefix}${this.searchQuery}`).then(function(result) {
-        vm.searching = false;
+      klantenService
+        .lookUpNumber(`${this.prefix}${this.searchQuery}`)
+        .then(function (result) {
+          vm.searching = false;
 
-        vm.results = [];
-        
-        vm.results.push({
-          id: result.zohoID,
-          naam: result.naam,
-          voornaam: result.voornaam,
-          doelgroepnummer: result.mvmNummer,
-        });
+          vm.results = [];
 
-        // TODO: implement multi results in the APIbackend
+          vm.results.push({
+            id: result.zohoID,
+            naam: result.naam,
+            voornaam: result.voornaam,
+            doelgroepnummer: result.mvmNummer,
+          });
 
-        vm.$router.push({ name: "voeding-details", params: { id: result.mvmNummer } });
+          // TODO: implement multi results in the APIbackend
 
-        vm.doelgroepnummer = "";
-      }).catch((error) => 
+          vm.$router.push({
+            name: "voeding-details",
+            params: { id: result.mvmNummer },
+          });
+
+          vm.doelgroepnummer = "";
+        })
+        .catch((error) =>
           vm.$Simplert.open({
             title: "Geen Resultaten!",
             message: error,
             type: "error",
-            customCloseBtnText: "Sluiten"
+            customCloseBtnText: "Sluiten",
           })
-      );
-    }
+        );
+    },
   },
 
-  created: function() {
-    authService.check().catch(() => this.$router.push("/login"))
-  }
+  created: function () {
+    authService.check().catch(() => this.$router.push("/login"));
+  },
 };
 </script>
 
 <style scoped>
-  .col-title {
-    font-weight: bold;
-    display: block;
-  }
+.col-title {
+  font-weight: bold;
+  display: block;
+}
 </style>

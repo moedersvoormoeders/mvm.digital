@@ -228,8 +228,9 @@
 <script>
 import { klantenService } from "../../_services/klanten.service";
 import { voedingService } from "../../_services/voeding.service";
+import { isJarig } from "../../_helpers/voeding";
+
 import { find } from "lodash";
-import { DateTime } from "luxon";
 
 import Datepicker from "vuejs-datepicker";
 import Multiselect from "vue-multiselect";
@@ -597,23 +598,6 @@ export default {
     this.loading = false;
   },
 };
-
-function isJarig(geboorteDatum) {
-  console.log(new Date(geboorteDatum));
-  const gebDatum = DateTime.fromObject({
-    year: DateTime.now().year,
-    month: new Date(geboorteDatum).getMonth() + 1,
-    day: new Date(geboorteDatum).getDate(),
-  }).startOf("day");
-
-  const nextWeek = DateTime.now().startOf("day").plus({ days: 7 });
-  const today = DateTime.now().startOf("day");
-
-  return (
-    today.valueOf() <= gebDatum.valueOf() &&
-    nextWeek.valueOf() > gebDatum.valueOf()
-  );
-}
 </script>
 
 <style

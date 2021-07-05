@@ -64,6 +64,18 @@
               ><i class="far fa-staff"></i> Sinterklaas</router-link
             >
           </li>
+          <li
+            v-if="permissions.onthaal"
+            :class="
+              $route.name.indexOf('onthaal') == 0
+                ? 'nav-item active'
+                : 'nav-item'
+            "
+          >
+            <router-link class="nav-link" to="/onthaal/search"
+              ><i class="fas fa-concierge-bell"></i> Onthaal</router-link
+            >
+          </li>
         </ul>
         <!-- <form class="form-inline my-2 my-lg-0">
           <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
@@ -89,6 +101,7 @@ export default {
         materiaal: false,
         voeding: false,
         sinterklaas: false,
+        onthaal: false,
       },
     };
   },
@@ -106,6 +119,9 @@ export default {
     });
     authService.canIDo("GET", "/v1/sinterklaas/klant").then((r) => {
       this.permissions.sinterklaas = r;
+    });
+    authService.canIDo("GET", "/v1/onthaal/klant").then((r) => {
+      this.permissions.onthaal = r;
     });
   },
 };
