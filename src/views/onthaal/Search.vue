@@ -40,11 +40,9 @@
           <div class="col-md-4 col-12">
             <div class="input-group mb-3">
               <div class="input-group-prepend">
-                <label class="input-group-text" for="inputGroupSelect01"
-                  >Type</label
-                >
+                <label class="input-group-text" for="prefix">Type</label>
               </div>
-              <select class="custom-select" v-model="prefix">
+              <select class="custom-select" id="prefix" v-model="prefix">
                 <option value="MVM">Doelgroep</option>
                 <option value>Op naam zoeken</option>
               </select>
@@ -245,42 +243,37 @@ export default {
 
       this.printing = false;
     },
-    search: function () {
-      let vm = this;
+    search: async function () {
+      try {
+        // reset printType
+        this.printType = "Gewoon";
+        this.customPrintText = "";
+        this.searching = true;
 
-      // reset printType
-      vm.printType = "Gewoon";
-      vm.customPrintText = "";
-      this.searching = true;
+        let searchPrefix = this.prefix;
+        let seachTerm = this.doelgroepnummer;
 
-      this.doelgroepnummer = keyboardHelper.superCrazyAzertyBarcodeFix(
-        this.doelgroepnummer
-      );
+        if (
+          this.doelgroepnummer.length >= 11 &&
+          !isNaN(parseInt(this.doelgroepnummer, 10))
+        ) {
+          // we have a rijksregisternummer!
+          seachTerm = this.doelgroepnummer.substring(0, 11);
+          searchPrefix = "";
+        }
 
-      let searchPrefix = this.prefix;
-      let seachTerm = this.doelgroepnummer;
+        this.results = [];
 
-      if (
-        this.doelgroepnummer.length >= 11 &&
-        !isNaN(parseInt(this.doelgroepnummer, 10))
-      ) {
-        // we have a rijksregisternummer!
-        seachTerm = this.doelgroepnummer.substring(0, 11);
-        searchPrefix = "";
-      }
+        if (searchPrefix == "MVM") {
+          this.doelgroepnummer = keyboardHelper.superCrazyAzertyBarcodeFix(
+            this.doelgroepnummer
+          );
 
-      if (searchPrefix != "MVM") {
-        alert("Nog niet ondersteund");
-      }
+          const result = await klantenService.lookUpNumber(
+            `${searchPrefix}${seachTerm}`
+          );
 
-      klantenService
-        .lookUpNumber(`${searchPrefix}${seachTerm}`)
-        .then(function (result) {
-          vm.searching = false;
-
-          vm.results = [];
-
-          vm.results.push({
+          this.results.push({
             id: result.zohoID,
             naam: result.naam,
             voornaam: result.voornaam,
@@ -295,16 +288,37 @@ export default {
             volwassenen: result.aantalBovenOf12Jaar,
           });
 
-          vm.doelgroepnummer = "";
-        })
-        .catch((error) =>
-          vm.$Simplert.open({
-            title: "Geen Resultaten!",
-            message: error,
-            type: "error",
-            customCloseBtnText: "Sluiten",
-          })
-        );
+          this.doelgroepnummer = "";
+        } else {
+          for (let result of await klantenService.search(
+            `${searchPrefix}${seachTerm}`
+          )) {
+            this.results.push({
+              id: result.zohoID,
+              naam: result.naam,
+              voornaam: result.voornaam,
+              doelgroepnummer: result.mvmNummer,
+              code: result.code,
+              dag: result.dag,
+              classificatie: result.classificatie,
+              redenControle: result.redenControle,
+              einddatum: result.einddatum,
+              typeVoeding: result.typeVoeding,
+              kinderen: result.aantalOnder12Jaar,
+              volwassenen: result.aantalBovenOf12Jaar,
+            });
+          }
+        }
+      } catch (e) {
+        this.$Simplert.open({
+          title: "Geen Resultaten!",
+          message: e,
+          type: "error",
+          customCloseBtnText: "Sluiten",
+        });
+      }
+
+      this.searching = false;
     },
   },
 
